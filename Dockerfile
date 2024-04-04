@@ -1,4 +1,5 @@
 FROM debian:stable-slim as fetcher
+#debian:stable-slim as fetcher
 COPY build/fetch_binaries.sh /tmp/fetch_binaries.sh
 
 RUN apt-get update && apt-get install -y \
@@ -7,7 +8,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN /tmp/fetch_binaries.sh
 
-FROM alpine:3.18.0
+FROM alpine:3.19.0
+
+ENV GLIBC_VERSION 2.35-r1
 
 RUN set -ex \
     && echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
@@ -70,7 +73,9 @@ RUN set -ex \
     websocat \
     swaks \
     perl-crypt-ssleay \
-    perl-net-ssleay
+    perl-net-ssleay \
+    postgresql-client \
+    mysql-client
 
 # Installing ctop - top-like container monitor
 COPY --from=fetcher /tmp/ctop /usr/local/bin/ctop
@@ -86,6 +91,9 @@ COPY --from=fetcher /tmp/grpcurl /usr/local/bin/grpcurl
 
 # Installing fortio
 COPY --from=fetcher /tmp/fortio /usr/local/bin/fortio
+
+# Installing istioctl
+COPY --from=fetcher /tmp/istioctl /usr/local/bin/istioctl
 
 # Setting User and Home
 USER root

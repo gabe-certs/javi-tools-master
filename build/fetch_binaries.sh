@@ -24,6 +24,16 @@ get_ctop() {
   wget "$LINK" -O /tmp/ctop && chmod +x /tmp/ctop
 }
 
+get_istioctl() {
+  VERSION=istio-1.18.7
+  LINK="https://github.com/istio/istio/releases/download/1.18.7/istio-1.18.7-linux-amd64.tar.gz "
+  wget "$LINK" -O /tmp/istio-1.18.7-linux-amd64.tar.gz && \
+  tar -zxvf /tmp/istio-1.18.7-linux-amd64.tar.gz && \
+  mv "istio-1.18.7/bin/istioctl" /tmp/istioctl && \
+  chmod +x /tmp/istioctl
+  chown root:root /tmp/istioctl
+}
+
 get_calicoctl() {
   VERSION=$(get_latest_release projectcalico/calicoctl)
   LINK="https://github.com/projectcalico/calicoctl/releases/download/${VERSION}/calicoctl-linux-${ARCH}"
@@ -83,3 +93,4 @@ get_calicoctl
 get_termshark
 get_grpcurl
 get_fortio
+get_istioctl
